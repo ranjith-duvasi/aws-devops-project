@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.example.order: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
