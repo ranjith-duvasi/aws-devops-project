@@ -2,6 +2,7 @@ package com.example.order.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -12,6 +13,9 @@ public class NotificationClient {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationClient.class);
 
+    @Value("${notification.service.url}")
+    private String notificationServiceUrl;
+
     private final WebClient webClient = WebClient.create();
 
     public void sendNotification(String user, String message) {
@@ -19,7 +23,7 @@ public class NotificationClient {
 
         try {
             webClient.post()
-                    .uri("http://notification-service:3000/notify")
+                    .uri(notificationServiceUrl)
                     .bodyValue(Map.of("user", user, "message", message))
                     .retrieve()
                     .bodyToMono(String.class)

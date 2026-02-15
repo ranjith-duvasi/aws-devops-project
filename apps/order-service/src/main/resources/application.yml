@@ -5,9 +5,22 @@ logging:
   level:
     root: INFO
     com.example.order: DEBUG
+  file:
+    name: app.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger - %msg%n"
+
+notification:
+  service:
+    url: http://localhost:3000/notify
+
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+
+spring:
+  config:
+    import: optional:file:./config.properties
