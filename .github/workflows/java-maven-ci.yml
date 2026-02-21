@@ -1,6 +1,10 @@
 
 name: CI pipeline maven based java application
 
+env:
+  REGISTRY: docker.io/ranjith413
+  APP_NAME: order-service
+
 on:
   push:
     branches:
@@ -29,9 +33,23 @@ jobs:
         cd apps/order-service/
         mvn clean verify
     
+    #- name: Static code Analysis
+    #  run: mvn sonar:sonar \
+    #    -Dsonar.projectkey=<project_key> \
+    #    -Dsonar.host.url=$SONAR_HOST_URL
+    #    -Dsonar.login={{ secrets.SONAR_TOKEN }}
+    
     - name: Image build
       run: |
         cd apps/order-service/
-        IMAGE_TAG=${{ github.sha}}-${{ github.run_number }}
-        docker build -t docker.io/ranjith413/order-service:$IMAGE_TAG .
+        echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        echo "IMAGE_TAG=${{ github.ref_name }}-$SHORT_SHA-${{ github.run_number }}" >> $GITHUB_ENV
+        docker build -t $REGISTRY/$APP_NAME:$IMAGE_TAG .
+
+    - name: Image push
+      run: |
+        echo "${{secrets.DOCKER_PASSWD}}" | \
+        docker login -u ranjith413 --password-stdin
+        docker push $REGISTRY/$APP_NAME:$IMAGE_TAG
+        docker logout
 
