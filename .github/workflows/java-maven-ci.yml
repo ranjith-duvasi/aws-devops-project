@@ -1,0 +1,37 @@
+
+name: CI pipeline maven based java application
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/order-service/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build and verify with maven
+      run: |
+        cd apps/order-service/
+        mvn clean verify
+    
+    - name: Image build
+      run: |
+        cd apps/order-service/
+        IMAGE_TAG=${{ github.sha}}-${{ github.run_number }}
+        docker build -t docker.io/ranjith413/order-service:$IMAGE_TAG .
+

@@ -38,7 +38,7 @@
   </dependencies>
 
   <build>
-  <finalName>orders-service</finalName>
+  <finalName>order-service</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>

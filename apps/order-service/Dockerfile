@@ -1,0 +1,15 @@
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+
+#runtime stage
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY /src/main/resources/config/config.properties application.properties
+COPY --from=builder /app/target/order-service.jar order-service.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "order-service.jar"]
