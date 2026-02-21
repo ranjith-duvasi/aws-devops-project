@@ -38,12 +38,16 @@ jobs:
     #    -Dsonar.projectkey=<project_key> \
     #    -Dsonar.host.url=$SONAR_HOST_URL
     #    -Dsonar.login={{ secrets.SONAR_TOKEN }}
+
+    - name: Create Image tag
+      run: |
+        echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        echo "IMAGE_TAG=${{ github.ref_name }}-$SHORT_SHA-${{ github.run_number }}" >> $GITHUB_ENV
+        
     
     - name: Image build
       run: |
         cd apps/order-service/
-        echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-        echo "IMAGE_TAG=${{ github.ref_name }}-$SHORT_SHA-${{ github.run_number }}" >> $GITHUB_ENV
         docker build -t $REGISTRY/$APP_NAME:$IMAGE_TAG .
 
     - name: Image push
