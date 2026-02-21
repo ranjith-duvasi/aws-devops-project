@@ -41,8 +41,8 @@ jobs:
 
     - name: Create Image tag
       run: |
-        echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-        echo "IMAGE_TAG=${{ github.ref_name }}-$SHORT_SHA-${{ github.run_number }}" >> $GITHUB_ENV
+        SHORT_SHA=$(git rev-parse --short HEAD)
+        echo "IMAGE_TAG=${{ github.ref_name }}-${SHORT_SHA}-${{ github.run_number }}" >> $GITHUB_ENV
         
     
     - name: Image build
