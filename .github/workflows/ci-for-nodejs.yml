@@ -37,7 +37,7 @@ jobs:
 
       - name: Image Build
         run: |
-          cd /apps/notification-service/
+          cd apps/notification-service/
           docker build -t $REGISTRY/$APP_NAME:$IMAGE_TAG .
 
       - name: Image push

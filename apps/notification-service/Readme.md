@@ -33,5 +33,3 @@ curl -X POST http://localhost:3000/notify \
 Response:
 
 { "status": "sent" }
-
-
