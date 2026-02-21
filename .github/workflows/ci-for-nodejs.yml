@@ -1,0 +1,49 @@
+
+name: CI nodejs application
+
+env:
+  REGISTRY: docker.io/ranjith413
+  APP_NAME: notification-service
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/notification-service/**'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: SetUp NodeJs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: npm Install and test
+        run: |
+          cd /apps/notification-service/
+          npm install
+
+      - name: Create Image tag
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo "IMAGE_TAG=${{ github.ref_name }}-${SHORT_SHA}-${{ github.run_number }}" >> $GITHUB_ENV
+
+      - name: Image Build
+        run: |
+          cd /apps/notification-service/
+          docker build -t $REGISTRY/$APP_NAME:$IMAGE_TAG .
+
+      - name: Image push
+        run: |
+          echo "${{secrets.DOCKER_PASSWD}}" | \
+          docker login -u ranjith413 --password-stdin
+          docker push $REGISTRY/$APP_NAME:$IMAGE_TAG
+          docker logout
+          
