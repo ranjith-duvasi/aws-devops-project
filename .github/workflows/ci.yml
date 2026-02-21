@@ -1,10 +1,10 @@
 
-name: CI pipeline maven based java application
+name: CI for maven application
 
 on:
   push:
     branches:
-      - main
+      - feature/**
 
 jobs:
   build:
