@@ -27,7 +27,7 @@ jobs:
       
       - name: npm Install and test
         run: |
-          cd /apps/notification-service/
+          cd apps/notification-service/
           npm install
 
       - name: Create Image tag
