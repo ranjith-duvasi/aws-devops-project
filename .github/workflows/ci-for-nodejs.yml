@@ -11,6 +11,12 @@ on:
       - main
     paths:
       - 'apps/notification-service/**'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual trigger'
+        required: false
+        default: 'Manual test'
 
 jobs:
   ci:
