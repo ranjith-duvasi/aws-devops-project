@@ -75,7 +75,7 @@ jobs:
       
       - name: Create a Pull requests
         env:
-          GH_TOKEN: {{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --title "Automated Image update - $IMAGE_TAG" \
