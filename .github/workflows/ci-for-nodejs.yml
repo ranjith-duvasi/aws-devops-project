@@ -59,14 +59,14 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           #modifying the manifest
-          BRANCH=$IMAGE_TAG
+          BRANCH=update-image-$IMAGE_TAG
           COMMIT_MESSAGE="update image tag ${BRANCH}"
           git checkout -b ${BRANCH}
           cd cd/helm-charts/$APP_NAME
           sed -i "s/^\\([[:space:]]*tag:\\).*/\\1 $IMAGE_TAG/" values.yaml
           git add values.yaml
           git commit -m "${COMMIT_MESSAGE}"
-          git push
+          git push --set-upstream origin ${BRANCH}
 
           
           
