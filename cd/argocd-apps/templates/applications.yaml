@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    repoUrl: https://github.com/ranjith-duvasi/aws-devops-project.git
+    repoURL: https://github.com/ranjith-duvasi/aws-devops-project.git
     path: cd/helm-charts/notification-service
     targetRevision: main
     helm:
