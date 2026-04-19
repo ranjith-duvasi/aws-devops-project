@@ -46,4 +46,22 @@ jobs:
           docker login -u ranjith413 --password-stdin
           docker push $REGISTRY/$APP_NAME:$IMAGE_TAG
           docker logout
+      
+      - name: Update Image Tag for cd
+        uses: actions/checkout@v4
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          #modifying the manifest
+          BRANCH=$IMAGE_TAG
+          COMMIT_MESSAGE="update image tag ${BRANCH}"
+          git checkout -b ${BRANCH}
+          cd cd/helm-charts/$APP_NAME
+          sed -i "s/^\\([[:space:]]*tag:\\).*/\\1 $IMAGE_TAG/" values.yaml
+          git add values.yaml
+          git commit -m "${COMMIT_MESSAGE}"
+          git push
+
+          
           
