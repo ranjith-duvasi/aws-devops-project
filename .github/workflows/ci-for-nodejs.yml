@@ -63,7 +63,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           #modifying the manifest
-          BRANCH=update-image-$IMAGE_TAG
+          BRANCH=auto/update-$IMAGE_TAG
           COMMIT_MESSAGE="update image tag ${BRANCH}"
           git checkout -b ${BRANCH}
           cd cd/helm-charts/$APP_NAME
@@ -71,6 +71,17 @@ jobs:
           git add values.yaml
           git commit -m "${COMMIT_MESSAGE}"
           git push --set-upstream origin ${BRANCH}
+          echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+      
+      - name: Create a Pull requests
+        env:
+          GH_TOKEN: {{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "Automated Image update - $IMAGE_TAG" \
+            --body "This PR is automatically created by bot using Github Actions" \
+            --base main \
+            --head $BRANCH    
 
           
           
