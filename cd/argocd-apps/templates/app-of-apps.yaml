@@ -1,0 +1,28 @@
+{{- range .Values.appList }}
+{{- $destination := $.Values.destination }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name | quote }}
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: {{ $destination.namespace | default "default" | quote }}
+    server: {{ $destination.server | quote }}
+  source:
+    repoURL: https://github.com/ranjith-duvasi/aws-devops-project.git
+    path: cd/helm-charts/{{ .name }}
+    targetRevision: main
+    helm:
+      releaseName: {{ .name | quote}}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}     
