@@ -14,11 +14,11 @@ terraform {
 
   # Remote state on S3 — recommended for team use
   backend "s3" {
-    bucket         = "ranjith-tfstate-582165930933-us-east1"
-    key            = "eks/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "terraform-statelock-table"
+    bucket       = "ranjith-tfstate-582165930933-us-east1"
+    key          = "eks/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
   }
 }
 
