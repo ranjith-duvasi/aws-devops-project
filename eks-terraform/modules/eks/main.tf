@@ -25,6 +25,7 @@ resource "aws_eks_node_group" "this" {
 
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = "${var.cluster_name}-${each.key}"
+  version = var.cluster_version
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.public_subnet_ids
   instance_types  = each.value.instance_types
@@ -61,10 +62,10 @@ resource "aws_eks_node_group" "this" {
 # -- EKS Add-ons ----------------------------------------------------------------
 locals {
   addons = {
-    coredns            = "v1.11.1-eksbuild.4"
-    kube-proxy         = "v1.29.1-eksbuild.2"
-    vpc-cni            = "v1.16.3-eksbuild.2"
-    #aws-ebs-csi-driver = "v1.28.0-eksbuild.1"
+    coredns            = "v1.13.2-eksbuild.4"
+    kube-proxy         = "v1.35.3-eksbuild.2"
+    vpc-cni            = "v1.21.1-eksbuild.1"
+    #aws-ebs-csi-driver = "v1.60.1-eksbuild.1"
   }
 }
 
@@ -73,7 +74,7 @@ resource "aws_eks_addon" "this" {
 
   cluster_name             = aws_eks_cluster.this.name
   addon_name               = each.key
-  #addon_version            = each.value     #will implement version pinning later
+  addon_version            = each.value     #commit this if don't want pin versiobs
   resolve_conflicts_on_update = "OVERWRITE"
 
   depends_on = [aws_eks_node_group.this]
