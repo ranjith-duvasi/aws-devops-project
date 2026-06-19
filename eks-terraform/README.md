@@ -34,6 +34,6 @@ Current context:
 
 kubectl config current-context
 
-dummy commit2
+dummy commit
 
 
