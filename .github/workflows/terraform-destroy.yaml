@@ -1,0 +1,53 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_VERSION: "1.10.5"
+  AWS_REGION: "us-east-1"
+  WORKING_DIR: "./eks-terraform"
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    #if: github.actor == 'ranjith-duvasi' 
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_APPLY_ROLE_ARN }}  # separate role, broader perms
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-apply
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Cache Terraform providers
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.WORKING_DIR }}/.terraform
+          key: terraform-${{ hashFiles('eks-terraform/.terraform.lock.hcl') }}
+
+      - name: Terraform Init
+        run: |
+          terraform init
+
+      - name: Terraform Destroy
+        run: |
+          terraform destroy -auto-approve
+  
