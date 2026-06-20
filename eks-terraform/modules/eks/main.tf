@@ -5,8 +5,8 @@ resource "aws_eks_cluster" "this" {
   role_arn = var.cluster_role_arn
 
   vpc_config {
-    subnet_ids              = var.public_subnet_ids
-    endpoint_public_access  = true
+    subnet_ids             = var.public_subnet_ids
+    endpoint_public_access = true
   }
 
   #access_config {
@@ -25,7 +25,7 @@ resource "aws_eks_node_group" "this" {
 
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = "${var.cluster_name}-${each.key}"
-  version = var.cluster_version
+  version         = var.cluster_version
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.public_subnet_ids
   instance_types  = each.value.instance_types
@@ -62,9 +62,9 @@ resource "aws_eks_node_group" "this" {
 # -- EKS Add-ons ----------------------------------------------------------------
 locals {
   addons = {
-    coredns            = "v1.13.2-eksbuild.4"
-    kube-proxy         = "v1.35.3-eksbuild.2"
-    vpc-cni            = "v1.21.1-eksbuild.1"
+    coredns    = "v1.13.2-eksbuild.4"
+    kube-proxy = "v1.35.3-eksbuild.2"
+    vpc-cni    = "v1.21.1-eksbuild.1"
     #aws-ebs-csi-driver = "v1.60.1-eksbuild.1"
   }
 }
@@ -72,9 +72,9 @@ locals {
 resource "aws_eks_addon" "this" {
   for_each = local.addons
 
-  cluster_name             = aws_eks_cluster.this.name
-  addon_name               = each.key
-  addon_version            = each.value     #commit this if don't want pin versiobs
+  cluster_name                = aws_eks_cluster.this.name
+  addon_name                  = each.key
+  addon_version               = each.value #commit this if don't want pin versiobs
   resolve_conflicts_on_update = "OVERWRITE"
 
   depends_on = [aws_eks_node_group.this]
